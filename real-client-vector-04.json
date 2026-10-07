@@ -1,0 +1,48 @@
+{
+ "description": "A real classic-Mac client answering a live psistorm challenge: retail Mac Diablo v1.09 (patched from the live server) run in a Mac OS 9 virtual machine, connected to useast.battle.net, 2026-10-06. Packets decoded from a pcap of the VM.",
+ "client": {
+  "platform": "PMAC",
+  "product": "DRTL",
+  "verbyte": "0x2A",
+  "exe_version_reported": "0x01000902"
+ },
+ "challenge": {
+  "sid": "0x06 SID_STARTVERSIONING (S>C)",
+  "archive": "psistorm-PMAC-04.mpq",
+  "value_string_hex": "11ea193a1ef30cf4103fd130438193df",
+  "raw_packet": "ff 06 32 00 00 f0 be f8 4d 81 dc 01 70 73 69 73 74 6f 72 6d 2d 50 4d 41 43 2d 30 34 2e 6d 70 71 00 11 ea 19 3a 1e f3 0c f4 10 3f d1 30 43 81 93 df 00"
+ },
+ "answer": {
+  "sid": "0x07 SID_REPORTVERSION (C>S)",
+  "exe_version": "0x01000902",
+  "checksum": "0x761b6192",
+  "exe_info_hex": "12e711545243f72d82c7298d559addd5",
+  "raw_packet": "ff 07 29 00 43 41 4d 50 4c 54 52 44 2a 00 00 00 02 09 00 01 92 61 1b 76 12 e7 11 54 52 43 f7 2d 82 c7 29 8d 55 9a dd d5 00",
+  "server_reply": "0x07 result 2 (passed)"
+ },
+ "files_in_hash_order": [
+  {
+   "name": "Diablo",
+   "fork": "data",
+   "bytes": 1160990,
+   "sha256": "5c73c27fb6a25bdc7fc38a86336f0bdbf6b1a5ef06ea5f272e572a5861320dbb"
+  },
+  {
+   "name": "Storm",
+   "fork": "data",
+   "bytes": 615178,
+   "sha256": "ce3531b9c4c2e3d90d5509e2fc4ffe5f1183471d6828b7eb97611c8296f2c87c"
+  },
+  {
+   "name": "Battle.net",
+   "fork": "data",
+   "bytes": 213397,
+   "sha256": "bbc8d6fb338fd76b1800b9eaae1b68322134f1907643bcd43397722e96037ac7"
+  }
+ ],
+ "result": "psistorm_template.c built with psistorm_build_04.h over these three data forks reproduces exe_version, checksum and exe_info exactly.",
+ "notes": [
+  "The files are the installed Mac Diablo 1.09 files in \"Diablo Folder/Diablo Files\" on the VM disk (data forks only). Blizzard binaries are not stored in this repository; the SHA-256s identify them.",
+  "On useast, DRTL answers are accepted on the exe version alone (docs/product-status.md), so the server accepting this answer is not evidence that it checked the hash; the match above is against the client's own computation."
+ ]
+}

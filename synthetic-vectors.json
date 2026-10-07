@@ -1,0 +1,143 @@
+{
+ "description": "Synthetic inputs: file k is bytes (i*mul+add) % 256 for i < length. Expected values computed by an independent Python implementation built on the lifted PowerPC compression functions.",
+ "files": [
+  {
+   "length": 5000,
+   "mul": 7,
+   "add": 3
+  },
+  {
+   "length": 3000,
+   "mul": 13,
+   "add": 1
+  },
+  {
+   "length": 100,
+   "mul": 31,
+   "add": 5
+  }
+ ],
+ "value_string_hex": "11ea193a1ef30cf4103fd130438193df",
+ "cases": [
+  {
+   "build": 0,
+   "exe_version": "b4ada69f",
+   "checksum": "1e079a9c",
+   "exe_info_hex": "d8c16b2e050de25dc64419340913b175"
+  },
+  {
+   "build": 1,
+   "exe_version": "b4ada69f",
+   "checksum": "8d288af2",
+   "exe_info_hex": "2c02f9bfacc29d0b23accea40c920c35"
+  },
+  {
+   "build": 2,
+   "exe_version": "b4ada69f",
+   "checksum": "65e41dd3",
+   "exe_info_hex": "8004ca4a811b53dd24ef52ecbdba6190"
+  },
+  {
+   "build": 3,
+   "exe_version": "b4ada69f",
+   "checksum": "a66e0649",
+   "exe_info_hex": "4d906a6f7fca4d9002ddd6df66a79e32"
+  },
+  {
+   "build": 4,
+   "exe_version": "b4ada69f",
+   "checksum": "d6a46d6a",
+   "exe_info_hex": "252ad8f710ad288e6a4719a77525c603"
+  },
+  {
+   "build": 5,
+   "exe_version": "b4ada69f",
+   "checksum": "2a5aad8f",
+   "exe_info_hex": "beab8febaeb276066b31bfcc90469a8e"
+  },
+  {
+   "build": 6,
+   "exe_version": "b4ada69f",
+   "checksum": "8be5418a",
+   "exe_info_hex": "4cb12b449f49e4f9e30c5e35ca8df2eb"
+  },
+  {
+   "build": 7,
+   "exe_version": "b4ada69f",
+   "checksum": "5811b74c",
+   "exe_info_hex": "f0e817b27189f9cce95248b220ceabe8"
+  },
+  {
+   "build": 8,
+   "exe_version": "b4ada69f",
+   "checksum": "9aef2e35",
+   "exe_info_hex": "c7d31c652d59ff407c5af21ca707aa1002"
+  },
+  {
+   "build": 9,
+   "exe_version": "b4ada69f",
+   "checksum": "10c1e146",
+   "exe_info_hex": "a08941b2d4e93b55a9dd8ae8c00e6c90"
+  },
+  {
+   "build": 10,
+   "exe_version": "b4ada69f",
+   "checksum": "527cdb54",
+   "exe_info_hex": "9185acf48ae4343b4b2e7f0512956ec9"
+  },
+  {
+   "build": 11,
+   "exe_version": "b4ada69f",
+   "checksum": "c1e8dbb7",
+   "exe_info_hex": "723803e453d737c00bdf7cd1c760e3c6"
+  },
+  {
+   "build": 12,
+   "exe_version": "b4ada69f",
+   "checksum": "dc5a9241",
+   "exe_info_hex": "687b677b89186ec4606b9a5f605b5b6e"
+  },
+  {
+   "build": 13,
+   "exe_version": "b4ada69f",
+   "checksum": "118c4dc7",
+   "exe_info_hex": "f06844c363274131831f87ae89442cf7"
+  },
+  {
+   "build": 14,
+   "exe_version": "b4ada69f",
+   "checksum": "d8e59dc0",
+   "exe_info_hex": "3a9db7fed7b1175443235ef0635b1aeb"
+  },
+  {
+   "build": 15,
+   "exe_version": "b4ada69f",
+   "checksum": "5e289914",
+   "exe_info_hex": "dbbda0aba1a907688b67b55c803d54dc"
+  },
+  {
+   "build": 16,
+   "exe_version": "b4ada69f",
+   "checksum": "4853b6c0",
+   "exe_info_hex": "580717d48be5ed6cd16756be4c8ad65b"
+  },
+  {
+   "build": 17,
+   "exe_version": "b4ada69f",
+   "checksum": "d1e57976",
+   "exe_info_hex": "12f4403b96f1bbb2869fed09b18e9916"
+  },
+  {
+   "build": 18,
+   "exe_version": "b4ada69f",
+   "checksum": "f8f33de3",
+   "exe_info_hex": "d9d001d5da569e81a2d0eecf258730d6"
+  },
+  {
+   "build": 19,
+   "exe_version": "b4ada69f",
+   "checksum": "a8ba81dc",
+   "exe_info_hex": "0e3bb9de8128de0c47312523e2236c9f"
+  }
+ ]
+}
