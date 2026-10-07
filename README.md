@@ -139,7 +139,7 @@ words**; there are 8 distinct non-zero constants (9 in builds 03, 13, 15 and 19)
 - Builds other than 02 and 04 against a real client; only those two have a real answer, and only build 14 was checked end to end against the emulated PowerPC
   code (the other 18 share the wrapper code).
 - Builds 01-03, 05-11, 13, 15, 17 and 19 against a server or client that accepted a correct answer (see below for the ones that did). Only wrong answers were sent for 06 and 19, and the other builds were never drawn.
-- W2BN on `PMAC`: the real Mac 2.02 client's answer to build 02 (`Warcraft II BNE`, `Storm`, `Battle.net` data forks) is reproduced exactly (`real-client-vector-02-w2bn.json`). Live, wrong checksums get `0x102`; a correct answer drew no `0x102` (our probe got no reply, so an explicit pass packet was not observed).
+- W2BN on `PMAC`: the real Mac 2.02 client's answer to build 02 (`Warcraft II BNE`, `Storm`, `Battle.net` data forks) is reproduced exactly (`real-client-vector-02-w2bn.json`). Live, with a CD key in the 0x51, a correct answer reached the key check (`0x201`, key in use) and a wrong checksum got `0x102`; a 0x51 with no key block gets no reply, as expected for W2BN.
 - Which three files a real client hashes for products other than Mac Diablo and Mac Warcraft II. Diablo: `Diablo`, `Storm`, `Battle.net`; Warcraft II: `Warcraft II BNE`, `Storm`, `Battle.net`.
 - `psistorm-XMAC-NN` (named in a 2006 forum post) has never been seen served.
 - A 0 byte in the value string adds `0xFFFF` in step 1 with truncating stores in the C code; the original's behavior for that case
