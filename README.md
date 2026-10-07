@@ -41,6 +41,7 @@ being updated years ago.
 | Platform `XMAC` (Mac OS X) | `ver-OSXI-0.mpq` (an Intel Mach-O bundle), never psistorm |
 | Real Mac Diablo **v1.08** client | verbyte `0x28`: got `ver-PMAC-0`, was told to patch (`DRTL_PMAC_108_109.mpq`) |
 | Real Mac Diablo **v1.09** client | verbyte `0x2A`: got `psistorm-PMAC-04`, answered, passed |
+| Real Mac Warcraft II **2.02** client | verbyte `0x4F`: got `psistorm-PMAC-02`, answered (its answer is in `real-client-vector-02-w2bn.json`) |
 
 The first public sighting of a psistorm challenge is a packet capture naming `psistorm-PMAC-15` on 2006-11-17 (vL forum
 message 161311). The 20 fragments are PEF files (PowerPC Code Fragment Manager) stamped **2006-11-08, 18:34:13 to 18:44:49**,
@@ -120,7 +121,7 @@ words**; there are 8 distinct non-zero constants (9 in builds 03, 13, 15 and 19)
   | `Storm` | 615,178 | `ce3531b9c4c2e3d90d5509e2fc4ffe5f1183471d6828b7eb97611c8296f2c87c` |
   | `Battle.net` | 213,397 | `bbc8d6fb338fd76b1800b9eaae1b68322134f1907643bcd43397722e96037ac7` |
 
-  The files are Blizzard's and are not in this repository. `python3 tests/run_tests.py DIR` runs the check if you have them.
+  The files are Blizzard's and are not in this repository. `python3 tests/run_tests.py DIR` runs the check if DIR holds either file set (this one or the Warcraft II one below).
 - **Real client (build 02, Warcraft II BNE 2.02).** The Mac Warcraft II client answered `psistorm-PMAC-02` (value string `bb3b059f39850b6e44413e7354c47d73`) with exe version `0x02000201`, checksum `0xEAA8AA30`, exe info `12b51c7cdd7097212c013148bb915fc1`. `c/psistorm.c` built with `c/psistorm_build_02.h` over the data forks of **`Warcraft II BNE`, `Storm` and `Battle.net`, in that order**, reproduces all three exactly (`real-client-vector-02-w2bn.json`, with the files' SHA-256s). Same function and file roles as Diablo, with the game executable first.
 - **The PowerPC code itself.** The parameters were read from the real fragments: Ghidra decompilation of each build's compression
   function (about 1,450 straight-line statements per build, every parameter behind a tiny constant-returning function), lifted to Python and run with
