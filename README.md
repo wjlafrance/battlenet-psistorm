@@ -29,9 +29,10 @@ being updated years ago.
 | Real Mac Diablo **v1.09** client | verbyte `0x2A`: got `psistorm-PMAC-04`, answered, passed |
 
 The first public sighting of a psistorm challenge is a packet capture naming `psistorm-PMAC-15` on 2006-11-17 (vL forum
-message 161311). The 20 fragments are PEF files (PowerPC Code Fragment Manager) stamped **2006-11-08, 18:34:13 to 18:44:49 UTC**,
-in NN order, 28 to 39 seconds apart: one batch of 20 generated builds. (The 20 Windows Lockdown DLLs are stamped
-2006-10-30 22:28:31 to 22:29:48 UTC, nine days earlier, in the same batch fashion.)
+message 161311). The 20 fragments are PEF files (PowerPC Code Fragment Manager) stamped **2006-11-08, 18:34:13 to 18:44:49**,
+in NN order, 28 to 39 seconds apart: one batch of 20 generated builds. A PEF stamp has no time zone. The archives' original file times on a server that still
+carries them are 2006-11-09 02:58:04-06 UTC, about 14 minutes after the last stamp if the stamps are Pacific time (UTC-8), so that is the likely reading.
+(The 20 Windows Lockdown DLLs are stamped 2006-10-30 22:28:31 to 22:29:48 UTC, about nine and a half days earlier, in the same batch fashion.)
 
 ## The challenge
 Server to client, the usual `SID_AUTH_INFO` (0x50) or `SID_STARTVERSIONING` (0x06) fields: the archive name
