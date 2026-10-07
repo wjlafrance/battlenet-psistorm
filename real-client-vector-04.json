@@ -43,6 +43,6 @@
  "result": "psistorm_template.c built with psistorm_build_04.h over these three data forks reproduces exe_version, checksum and exe_info exactly.",
  "notes": [
   "The files are the installed Mac Diablo 1.09 files in \"Diablo Folder/Diablo Files\" on the VM disk (data forks only). Blizzard binaries are not stored in this repository; the SHA-256s identify them.",
-  "On useast, DRTL answers are accepted on the exe version alone (docs/product-status.md), so the server accepting this answer is not evidence that it checked the hash; the match above is against the client's own computation."
+  "Server side (2026-10-06): DRTL on PMAC checks the hash. Correct answers from c/psistorm.c passed for builds 00, 04, 12, 14, 16, 18; corrupted checksums got 0x100; the exe-version dword is not validated."
  ]
 }

@@ -111,15 +111,19 @@ words**; there are 8 distinct non-zero constants (9 in builds 03, 13, 15 and 19)
   instrumented stubs, which gives the tables with no heuristics. The lifted functions were compared with Ghidra's p-code
   emulation of the real PowerPC code (8 random blocks per build, all 20 builds, plus build 14 end to end: hash, HMAC, both
   transforms), and the table-driven form reproduces the lifted function of every build on 30 of 30 random blocks.
+- **Against the live server.** DRTL on `PMAC` **checks the hash.** Correct answers from `c/psistorm.c` (over the three files above) were accepted
+  (result `0x000`) for builds 00, 04, 12, 14, 16 and 18, 8 of 8 runs; a wrong checksum was refused with `0x100` and the patch offer
+  `DRTL_PMAC_108_109.mpq` in 4 of 4 runs (checksum XOR 1, 2, `0x80000000`, `0xDEADBEEF`, with the correct exe version). The exe-version dword in the answer is
+  **not validated**: with the correct checksum, versions 0, 0xFFFFFFFF, 1.08, 1.09 and 1.0A.00 all passed. So the server verifies the checksum (DRTL reports
+  a mismatch as "old version", not `0x102`), and acceptance of the answers from this code is a server-side check of the implementation.
 - **Tests here.** `synthetic-vectors.json` has an answer per build for synthetic files, computed by an independent
   implementation; `tests/run_tests.py` checks `c/psistorm.c` on all 20 builds and `psistorm_ref.py` (pure Python) on four.
 
 ## What is not verified
 - Builds other than 04 against a real client; only 04 has a real answer, and only build 14 was checked end to end against the emulated PowerPC
   code (the other 18 share the wrapper code).
-- Whether the **server checks the hash**. For DRTL the server accepted this answer, but it also accepts DRTL answers on the exe
-  version alone, so acceptance is not a check. For W2BN on `PMAC` a wrong answer is rejected (`0x102`); no Mac W2BN client or files were
-  available, so W2BN psistorm is untested with correct input.
+- Builds 01-03, 05-11, 13, 15, 17 and 19 against a server or client that accepted a correct answer (see below for the ones that did). Only wrong answers were sent for 06 and 19, and the other builds were never drawn.
+- W2BN on `PMAC` with correct input: a wrong answer is rejected (`0x102`); no Mac W2BN client or files were available when this was written.
 - Which three files a real client hashes for products other than Mac Diablo. For Mac Diablo they are the three above, in that order.
 - `psistorm-XMAC-NN` (named in a 2006 forum post) has never been seen served.
 - A 0 byte in the value string adds `0xFFFF` in step 1 with truncating stores in the C code; the original's behavior for that case
