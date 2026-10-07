@@ -4,8 +4,8 @@
   python3 tests/run_tests.py [DIR]
 
 Compiles psistorm.c for each of the 20 builds and checks it against synthetic-vectors.json and against psistorm_ref.py.
-With DIR (a directory holding the Mac Diablo 1.09 data forks `Diablo`, `Storm`, `Battle.net`, optionally with .rsrc or .data
-appended) it also checks real-client-vector-04.json; the files are Blizzard's and are not in this repository, their SHA-256s are
+With DIR (a directory holding the data forks of Mac Diablo 1.09 (`Diablo`, `Storm`, `Battle.net`) or Mac Warcraft II 2.02 (`Warcraft II BNE`, `Storm`, `Battle.net`), optionally with .rsrc or .data
+appended) it also checks real-client-vector-04.json / real-client-vector-02-w2bn.json (whichever set is there); the files are Blizzard's and are not in this repository, their SHA-256s are
 in the vector. Needs a C compiler."""
 import hashlib, json, os, subprocess, sys, tempfile
 here = os.path.dirname(os.path.abspath(__file__))
@@ -43,19 +43,22 @@ for case in syn['cases']:
     bad += (got != want) + (not ok_ref)
 
 if len(sys.argv) > 1:
-    v = json.load(open(os.path.join(root, 'real-client-vector-04.json')))
-    real = []
-    for f in v['files_in_hash_order']:
-        found = [os.path.join(sys.argv[1], f['name'] + s) for s in ('', '.rsrc', '.data') if os.path.exists(os.path.join(sys.argv[1], f['name'] + s))]
-        if not found: sys.exit('real vector: %s not found in %s' % (f['name'], sys.argv[1]))
-        data = open(found[0], 'rb').read()
-        if hashlib.sha256(data).hexdigest() != f['sha256']: sys.exit('real vector: %s is not the expected file' % found[0])
-        real.append(found[0])
-    a = v['answer']
-    want = 'version=%08x checksum=%08x info=%s' % (int(a['exe_version'], 16), int(a['checksum'], 16), a['exe_info_hex'])
-    got = subprocess.run([build(4), *real, v['challenge']['value_string_hex']], capture_output=True, text=True).stdout.strip()
-    print('real client vector (build 04):', 'MATCH' if got == want else 'MISMATCH'); bad += got != want
+    for vf in ('real-client-vector-04.json', 'real-client-vector-02-w2bn.json'):
+        v = json.load(open(os.path.join(root, vf)))
+        build_nn = v.get('build', 4)
+        real = []
+        for f in v['files_in_hash_order']:
+            found = [os.path.join(sys.argv[1], f['name'] + s) for s in ('', '.rsrc', '.data') if os.path.exists(os.path.join(sys.argv[1], f['name'] + s))]
+            if not found: break
+            if hashlib.sha256(open(found[0], 'rb').read()).hexdigest() != f['sha256']: break   # another product's Storm / Battle.net
+            real.append(found[0])
+        if len(real) < len(v['files_in_hash_order']):
+            print('%s: skipped (files not in %s)' % (vf, sys.argv[1])); continue
+        a = v['answer']
+        want = 'version=%08x checksum=%08x info=%s' % (int(a['exe_version'], 16), int(a['checksum'], 16), a['exe_info_hex'])
+        got = subprocess.run([build(build_nn), *real, v['challenge']['value_string_hex']], capture_output=True, text=True).stdout.strip()
+        print('real client vector (build %02d, %s):' % (build_nn, v['client']['product'] if 'client' in v else '?'), 'MATCH' if got == want else 'MISMATCH'); bad += got != want
 else:
-    print('real client vector: skipped (no file directory given)')
+    print('real client vectors: skipped (no file directory given)')
 print('FAILURES: %d' % bad)
 sys.exit(1 if bad else 0)

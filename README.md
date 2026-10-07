@@ -16,7 +16,7 @@ being updated years ago.
 - **The answer** is `HMAC(key = seed, message = file1 || file2 || file3)` with that hash, where the seed is the server's value
   string passed through a base-255 transform. The checksum is the first 4 digest bytes; the "EXE info" is a base-255 re-encoding of the
   other 16 digest bytes.
-- **Verified end to end against a real client** for build 04 (below): a real Mac Diablo 1.09 client's live answer is reproduced
+- **Verified end to end against a real client** for builds 04 and 02 (below): a real Mac Diablo 1.09 client's and a real Mac Warcraft II 2.02 client's answers are reproduced
   exactly by `c/psistorm.c`.
 
 ## Why it exists, and how it relates to Lockdown
@@ -59,7 +59,7 @@ fragment exporting `CheckRevision`, plus a resource fork (`cfrg`). The export ha
 1. **seed** = value string transformed to 16 bytes: for each input byte from the last to the first, multiply the 16-byte
    little-endian buffer by 255, then add `byte - 1`. Fails (returns 0) if it needs more than 16 bytes. (The same transform the
    Windows Lockdown uses.)
-2. **exeVersion** = the last 4 bytes of file 1, little-endian. (Mac Diablo 1.09's `Diablo` ends `02 09 00 01`, version 1.00.09.02.)
+2. **exeVersion** = the last 4 bytes of file 1, little-endian. (Mac Diablo 1.09's `Diablo` ends `02 09 00 01`, version 1.00.09.02; `Warcraft II BNE` ends `01 02 00 02` for `0x02000201`.)
 3. **digest** = HMAC over `file1 || file2 || file3`: key = the seed zero-extended to 64 bytes, ipad `0x36`, opad `0x5C`, 20-byte
    inner digest. The files are read whole (0x4000-byte chunks, no padding, no interpretation of their format); a file that cannot
    be opened is skipped.
@@ -121,6 +121,7 @@ words**; there are 8 distinct non-zero constants (9 in builds 03, 13, 15 and 19)
   | `Battle.net` | 213,397 | `bbc8d6fb338fd76b1800b9eaae1b68322134f1907643bcd43397722e96037ac7` |
 
   The files are Blizzard's and are not in this repository. `python3 tests/run_tests.py DIR` runs the check if you have them.
+- **Real client (build 02, Warcraft II BNE 2.02).** The Mac Warcraft II client answered `psistorm-PMAC-02` (value string `bb3b059f39850b6e44413e7354c47d73`) with exe version `0x02000201`, checksum `0xEAA8AA30`, exe info `12b51c7cdd7097212c013148bb915fc1`. `c/psistorm.c` built with `c/psistorm_build_02.h` over the data forks of **`Warcraft II BNE`, `Storm` and `Battle.net`, in that order**, reproduces all three exactly (`real-client-vector-02-w2bn.json`, with the files' SHA-256s). Same function and file roles as Diablo, with the game executable first.
 - **The PowerPC code itself.** The parameters were read from the real fragments: Ghidra decompilation of each build's compression
   function (about 1,450 straight-line statements per build, every parameter behind a tiny constant-returning function), lifted to Python and run with
   instrumented stubs, which gives the tables with no heuristics. The lifted functions were compared with Ghidra's p-code
@@ -135,11 +136,11 @@ words**; there are 8 distinct non-zero constants (9 in builds 03, 13, 15 and 19)
   implementation; `tests/run_tests.py` checks `c/psistorm.c` on all 20 builds and `psistorm_ref.py` (pure Python) on four.
 
 ## What is not verified
-- Builds other than 04 against a real client; only 04 has a real answer, and only build 14 was checked end to end against the emulated PowerPC
+- Builds other than 02 and 04 against a real client; only those two have a real answer, and only build 14 was checked end to end against the emulated PowerPC
   code (the other 18 share the wrapper code).
 - Builds 01-03, 05-11, 13, 15, 17 and 19 against a server or client that accepted a correct answer (see below for the ones that did). Only wrong answers were sent for 06 and 19, and the other builds were never drawn.
 - W2BN on `PMAC`: the real Mac 2.02 client's answer to build 02 (`Warcraft II BNE`, `Storm`, `Battle.net` data forks) is reproduced exactly (`real-client-vector-02-w2bn.json`). Live, wrong checksums get `0x102`; a correct answer drew no `0x102` (our probe got no reply, so an explicit pass packet was not observed).
-- Which three files a real client hashes for products other than Mac Diablo. For Mac Diablo they are the three above, in that order.
+- Which three files a real client hashes for products other than Mac Diablo and Mac Warcraft II. Diablo: `Diablo`, `Storm`, `Battle.net`; Warcraft II: `Warcraft II BNE`, `Storm`, `Battle.net`.
 - `psistorm-XMAC-NN` (named in a 2006 forum post) has never been seen served.
 - A 0 byte in the value string adds `0xFFFF` in step 1 with truncating stores in the C code; the original's behavior for that case
   was not tested (real value strings are random bytes, so it is rare).
