@@ -1,0 +1,38 @@
+{
+ "description": "Real Mac Warcraft II BNE 2.02 answer to challenge psistorm-PMAC-02 (value string and answer from the client's captured run; reproduced by the build-02 C template on the extracted files, 2026-10-06).",
+ "client": {
+  "platform": "PMAC",
+  "product": "W2BN",
+  "verbyte": "0x4F"
+ },
+ "challenge": {
+  "archive": "psistorm-PMAC-02.mpq",
+  "value_string_hex": "bb3b059f39850b6e44413e7354c47d73"
+ },
+ "answer": {
+  "exe_version": "0x02000201",
+  "checksum": "0xeaa8aa30",
+  "exe_info_hex": "12b51c7cdd7097212c013148bb915fc1"
+ },
+ "files_in_hash_order": [
+  {
+   "name": "Warcraft II BNE",
+   "fork": "data",
+   "bytes": 931587,
+   "sha256": "9c89c695e68e0e1d6251e99ce924a2832a04904d733a4c607e3bdfb3e693223d"
+  },
+  {
+   "name": "Storm",
+   "fork": "data",
+   "bytes": 621998,
+   "sha256": "a9b79ecf795cbf1c793d8046950c8c1344c4591c9c2d4200ac521e8c00a0376a"
+  },
+  {
+   "name": "Battle.net",
+   "fork": "data",
+   "bytes": 213397,
+   "sha256": "65ae68560c144a6b606b732cb0157f66414378fc73aa31d1c0baa7a8325cc86f"
+  }
+ ],
+ "build": 2
+}
