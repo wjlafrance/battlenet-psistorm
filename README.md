@@ -19,6 +19,20 @@ being updated years ago.
 - **Verified end to end against a real client** for build 04 (below): a real Mac Diablo 1.09 client's live answer is reproduced
   exactly by `c/psistorm.c`.
 
+## Why it exists, and how it relates to Lockdown
+- **Closing a loophole.** Lockdown (Windows, October 2006) made bot logins hard, and bots worked around it by claiming to be a Mac: the Mac challenges at the time were the old file-hash formula, which a hashing server could answer without the real client. A forum poster reported that psistorm ended that workaround (vL message 161327, 2006-11-18) and another had predicted Blizzard would notice that PMAC/XMAC logins were a way around Lockdown (message 161455). The fragments were built 9 days after the Lockdown DLLs and first seen on the wire 8 days after that. That is the likely reason for a purpose-built Mac check *(inference from the forum thread and the dates)*.
+- **Shared pieces.** Psistorm and Lockdown use the same value-string transform and the same exe-info transform, and both key an HMAC-style construction (ipad `0x36`, opad `0x5C`) with the 16-byte seed. Both were produced as a batch of 20 randomised builds: Lockdown's DLLs differ in two seed constants and function layout (one algorithm, two compiles), psistorm's fragments differ in every parameter of the hash.
+- **Different inputs.** Lockdown hashes in-memory PE module images (undoing relocations with the per-DLL seed), the DLL's own image and a screen capture. Psistorm hashes three files raw, with no format interpretation and no screen. It is the simpler algorithm; the per-build randomisation is the elaborate part, and it is a generator over one template, not 20 hand-written programs *(inference: all 20 were compiled in about ten minutes)*.
+- **The name.** Psionic Storm is the StarCraft High Templar ability, and Lockdown is a StarCraft Ghost ability: Blizzard named both after in-game spells *(inference; nothing says so)*.
+
+## The other Mac challenges
+| Archive | What it is |
+|---|---|
+| `ver-PMAC-0.mpq` | PowerPC CFM fragment, the Formula-Padded check (byte-swapped words; version and date from an 8-byte trailer at the end of the executable), stamped 2006-08-29 |
+| `ver-XMAC-0.mpq` | PowerPC fragment linked against CarbonLib, stamped 2006-08-11; the original `XMAC` challenge, probably the same algorithm as `ver-PMAC-0` *(not disassembled)*; still served by `connect-forever.classic.blizzard.com` |
+| `ver-OSXI-0.mpq` | Intel Mach-O bundle; the same Formula-Padded machinery, with the exe version and date read from `Version.txt` and `DateTime.txt` in the app bundle; what useast serves `XMAC` clients now |
+| `psistorm-PMAC-NN.mpq` | this repository |
+
 ## Where it appears
 | Observation (2026-10-06, `useast.battle.net`) | |
 |---|---|
