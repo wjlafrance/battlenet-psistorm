@@ -101,3 +101,19 @@ def check_revision(nn, value_string, files):
     digest = hmac(load_build(nn), seed, b''.join(files))
     tail = files[0][-4:].rjust(4, b'\0')
     return struct.unpack('<I', tail)[0], struct.unpack('<I', digest[:4])[0], digest_shuffle(digest[4:20])
+
+
+def bundle_version_dword(version):
+    """'1.14.3.71' -> 0x010E0347: the four components as bytes, the first in the top byte."""
+    a, b, c, d = (int(x) for x in version.split('.'))
+    return (a << 24) | (b << 16) | (c << 8) | d
+
+
+def check_revision_xmac(nn, value_string, exe_bytes, bundle_version):
+    """Intel Mac (psistorm-XMAC-NN, Diablo II 1.14.x): the same hash over the main executable alone (file 2 and file 3 are not
+    hashed); the exe version is the app's CFBundleVersion, not the file tail. Returns (exe_version, checksum, exe_info bytes),
+    or None if the value string does not fit."""
+    r = check_revision(nn, value_string, [exe_bytes])
+    if r is None:
+        return None
+    return bundle_version_dword(bundle_version), r[1], r[2]

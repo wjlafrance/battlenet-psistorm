@@ -1,0 +1,41 @@
+{
+ "description": "A real Intel Mac client answering a live psistorm challenge: Mac Diablo II 1.14.3.71 (platform XMAC, product D2DV, verbyte 0x0E) on Mac OS X 10.13.6, connected to useast.battle.net, 2026-10-09. The raw CD-key part of the SID_AUTH_CHECK packet is not included.",
+ "build": 3,
+ "client": {
+  "platform": "XMAC",
+  "product": "D2DV",
+  "verbyte": "0x0E",
+  "exe_version_reported": "0x010E0347",
+  "exe_version_source": "CFBundleVersion"
+ },
+ "challenge": {
+  "sid": "0x50 SID_AUTH_INFO (S>C)",
+  "archive": "psistorm-XMAC-03.mpq",
+  "value_string_hex": "291dc31be93e300344547f47dbc0cd7c",
+  "raw_packet": "ff 50 3e 00 00 00 00 00 f6 14 78 27 5f de 0d 00 00 f0 be f8 4d 81 dc 01 70 73 69 73 74 6f 72 6d 2d 58 4d 41 43 2d 30 33 2e 6d 70 71 00 29 1d c3 1b e9 3e 30 03 44 54 7f 47 db c0 cd 7c 00"
+ },
+ "answer": {
+  "sid": "0x51 SID_AUTH_CHECK (C>S)",
+  "exe_version": "0x010e0347",
+  "checksum": "0x3a8d204a",
+  "exe_info_hex": "2a5983e56719580299935a9d01c7a644",
+  "exe_info_length": 16,
+  "server_reply": "0x51 result 0x000 passed",
+  "server_reply_raw_packet": "ff 51 09 00 00 00 00 00 00"
+ },
+ "server_result": "success",
+ "files_in_hash_order": [
+  {
+   "name": "Diablo II",
+   "path": "Diablo II.app/Contents/MacOS/Diablo II",
+   "bytes": 4167552,
+   "sha256": "1e8dd6dd3d19019cbaa29270f4abfb04960fcf1ce5d341fa520863b0d640d177",
+   "info_plist_CFBundleVersion": "1.14.3.71"
+  }
+ ],
+ "files_not_hashed": "The XMAC library ignores its file arguments (the client passes a path and two empty buffers). It hashes the main bundle's executable only.",
+ "notes": [
+  "Server side (2026-10-09): useast accepted this answer (0x51 result 0, version check passed). c/psistorm.c built with c/psistorm_build_03.h and psistorm_ref.py both reproduce checksum and exe_info over the one file; the exe version is not the file tail (it is CFBundleVersion of the app).",
+  "The real psistorm-XMAC-03 library run in a fake Diablo II bundle gives the same values on arbitrary input: xmac-harness (280 of 280 cases over all 20 builds)."
+ ]
+}

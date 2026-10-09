@@ -1,4 +1,4 @@
-# psistorm: the classic-Mac Battle.net version check
+# psistorm: the classic-Mac and Intel-Mac Battle.net version check
 
 `psistorm-PMAC-NN.mpq` is the challenge Battle.net sends a classic-Mac client (platform `PMAC`) in place of the Windows
 **Lockdown** challenge. It was introduced in November 2006. The challenge is a code library the client runs over three of its
@@ -6,7 +6,7 @@ own files; the result goes back to the server in `SID_AUTH_CHECK` / `SID_REPORTV
 algorithm (a 2006 BNETDocs call for research drew no answer, vL forum thread 161449). This repository documents it, with C code
 that reproduces a real Mac client's answer exactly.
 
-Status: archival research notes and sample code (2026-10-06). The target is a 2006 version check on a game that stopped
+Status: archival research notes and sample code (2026-10-06; Intel Macs added 2026-10-09). The target is a 2006 version check on a game that stopped
 being updated years ago.
 
 ## Summary
@@ -18,6 +18,7 @@ being updated years ago.
   other 16 digest bytes.
 - **Verified end to end against a real client** for builds 04 and 02 (below): a real Mac Diablo 1.09 client's and a real Mac Warcraft II 2.02 client's answers are reproduced
   exactly by `c/psistorm.c`.
+- **The Intel Mac client uses the same program.** `psistorm-XMAC-NN.mpq` (Diablo II 1.14.x on Intel Macs, 2026-10-09) has the same 20 parameter sets and hashes only the application's main executable; five real answers are reproduced exactly, and the real Intel libraries agree with this code on 280 of 280 test runs (see "Intel Macs").
 
 ## Why it exists, and how it relates to Lockdown
 - **Closing a loophole.** Lockdown (Windows, October 2006) made bot logins hard, and bots worked around it by claiming to be a Mac: the Mac challenges at the time were the old file-hash formula, which a hashing server could answer without the real client. A forum poster reported that psistorm ended that workaround (vL message 161327, 2006-11-18) and another had predicted Blizzard would notice that PMAC/XMAC logins were a way around Lockdown (message 161455). The fragments were built 9 days after the Lockdown DLLs and first seen on the wire 8 days after that. That is the likely reason for a purpose-built Mac check *(inference from the forum thread and the dates)*.
@@ -30,15 +31,18 @@ being updated years ago.
 |---|---|
 | `ver-PMAC-0.mpq` | PowerPC CFM fragment, the Formula-Padded check (byte-swapped words; version and date from an 8-byte trailer at the end of the executable), stamped 2006-08-29 |
 | `ver-XMAC-0.mpq` | PowerPC fragment linked against CarbonLib, stamped 2006-08-11; the original `XMAC` challenge, probably the same algorithm as `ver-PMAC-0` *(not disassembled)*; still served by `connect-forever.classic.blizzard.com` |
-| `ver-OSXI-0.mpq` | Intel Mach-O bundle; the same Formula-Padded machinery, with the exe version and date read from `Version.txt` and `DateTime.txt` in the app bundle; what useast serves `XMAC` clients now |
+| `ver-OSXI-0.mpq` | Intel Mach-O bundle; the same Formula-Padded machinery, with the exe version and date read from `Version.txt` and `DateTime.txt` in the app bundle; what useast served the `XMAC` probes of 2026-10-06 and a PowerPC Diablo II 1.10 client (2026-10-07) |
 | `psistorm-PMAC-NN.mpq` | this repository |
+| `psistorm-XMAC-NN.mpq` | Intel Mach-O bundle: the same hash as `psistorm-PMAC-NN`, for the Intel Mac Diablo II 1.14.x client; see "Intel Macs" |
 
 ## Where it appears
 | Observation (2026-10-06, `useast.battle.net`) | |
 |---|---|
 | Platform `PMAC`, W2BN with verbyte `0x4F`, DRTL or DSHR with `0x2A` | `psistorm-PMAC-NN.mpq`, NN seen over 00-19 |
 | Any other verbyte on `PMAC` (all 256 tried for W2BN and DRTL) | `ver-PMAC-0.mpq`, the Mac Formula check (`A=0 B=0 C=0 4 A=A+S C=C+A`) |
-| Platform `XMAC` (Mac OS X) | `ver-OSXI-0.mpq` (an Intel Mach-O bundle), never psistorm |
+| Platform `XMAC` (Mac OS X), W2BN and DRTL probes | `ver-OSXI-0.mpq` (an Intel Mach-O bundle), not psistorm |
+| Real PowerPC Mac Diablo II **1.10** client (`XMAC`, D2DV, verbyte `0x0A`, 2026-10-07) | `ver-OSXI-0.mpq`; the client got no answer through |
+| Real Intel Mac Diablo II **1.14.1.68** and **1.14.3.71** clients (`XMAC`, D2DV, verbyte `0x0E`, 2026-10-09) | `psistorm-XMAC-NN.mpq`; NN seen 03, 05, 08, 12, 17; all 20 are served when requested by name |
 | Real Mac Diablo **v1.08** client | verbyte `0x28`: got `ver-PMAC-0`, was told to patch (`DRTL_PMAC_108_109.mpq`) |
 | Real Mac Diablo **v1.09** client | verbyte `0x2A`: got `psistorm-PMAC-04`, answered, passed |
 | Real Mac Warcraft II **2.02** client | verbyte `0x4F`: got `psistorm-PMAC-02`, answered (its answer is in `real-client-vector-02-w2bn.json`) |
@@ -48,6 +52,35 @@ message 161311). The 20 fragments are PEF files (PowerPC Code Fragment Manager) 
 in NN order, 28 to 39 seconds apart: one batch of 20 generated builds. A PEF stamp has no time zone. The archives' original file times on a server that still
 carries them are 2006-11-09 02:58:04-06 UTC, about 14 minutes after the last stamp if the stamps are Pacific time (UTC-8), so that is the likely reading.
 (The 20 Windows Lockdown DLLs are stamped 2006-10-30 22:28:31 to 22:29:48 UTC, about nine and a half days earlier, in the same batch fashion.)
+
+## Intel Macs: `psistorm-XMAC-NN` (Diablo II 1.14.x, 2026-10-09)
+A real Intel Mac Diablo II client (`XMAC`, product `D2DV`, verbyte `0x0E`) on Mac OS X 10.13.6 was served `psistorm-XMAC-NN.mpq` by useast. It is the same challenge, with these differences:
+- **One program, the same 20 parameter sets.** The parameters of `psistorm-PMAC-NN` (`c/psistorm_build_NN.h`) reproduce the Intel client's answer for builds 03, 05, 08, 12 and 17, and the real libraries' output for all 20. Each archive holds one **i386 Mach-O bundle** exporting `_CheckRevision` (46,368 bytes in all 20 builds), the same call shape as before. Compared function by function, 40 of the 42 functions of a build are identical in all 20 builds; only the compression function and the hash initialisation, the per-build parameters, differ.
+- **Only the application's executable is hashed.** The library **ignores the file arguments it is called with** (the client passes a path and two empty buffers). It hashes the main bundle's executable of the process it is loaded into (`CFBundleCopyExecutableURL`): `digest = HMAC(seed, exe)`. File 2 and file 3 are not hashed.
+- **The exe version is the bundle version.** It is the `CFBundleVersion` of the app parsed as four decimals (`1.14.3.71` is `0x010E0347`), not the last four bytes of the file (the Intel executable ends in zeros). The library fails if the version is missing or malformed.
+- **The library deletes itself** (`unlink` of its own file) every time it runs, and it is more than a hash: see "The Lurker".
+- **The exe info can be shorter than 16 bytes.** It is the digest shuffle, as long as the number needs; the 1.14.3.71 answer to numeral 17 was 15 bytes (`5ebb86c37e9c289574f7ba168d36b6`) and the client sent those 15 bytes followed by the NUL. `c/psistorm.c` and `psistorm_ref.py` produce the same 15 bytes.
+
+What useast did with the answers (the five connections of one client, 2026-10-09; the vectors are `real-client-vector-xmac-d2dv-NN.json`):
+
+| Numeral | Client | Server's reply to `SID_AUTH_CHECK` |
+|---|---|---|
+| 08 | 1.14.1.68 | `0x100` (old game version), patch `D2DV_XMAC_1xx_114d.mpq`; the client then patched itself to 1.14.3.71 |
+| 05 | 1.14.3.71 | `0x000` passed |
+| 12 | 1.14.3.71 | `0x000` passed |
+| 17 | 1.14.3.71 | **`0x100` + the patch file again**, to an answer that this code and the real library both reproduce |
+| 03 | 1.14.3.71 | `0x000` passed |
+
+The reply to numeral 08 does not say whether the hash was valid (the client was simply old). Numeral 17 is odd: the answer is exactly what the client computes, yet it was refused. Its exe info is the only 15-byte one of the five. Whether the server mishandles a short exe info or numeral 17 is not established (one sample).
+
+## The Lurker: a hot-fix inside the Intel library
+Each Intel library contains more than the hash. Its strings include `Lurker/src/d2lurker.cpp`, `Prepatch.lst`, `delete`, `extract`, `execute` and `BNUpdate`, the name of the Blizzard updater. Static analysis (Ghidra; nothing was run on a client this applies to) gives this:
+- It is **dormant unless the host application is exactly Diablo II 1.14.0.64 (`com.blizzard.DiabloII`, version `0x010E0040`) or Warcraft III 1.27.0.18 (`com.blizzard.WarcraftIII`, `0x011B0012`)**. For every other build, including the 1.14.1.68 and 1.14.3.71 clients seen here, `_CheckRevision` goes straight to the hash. For those two builds it **returns failure unless its hook was installed**.
+- **Diablo II 1.14.0.64:** it stores about 35 hardcoded offsets into that exact executable, suspends the other threads of the process and walks their stacks for a frame that returns into a 346-byte range of the client's code (offsets `0x45251` to `0x453AB`, evidently one function), and replaces that frame's saved return address with its own routine. That routine reads a prepatch list (`delete`, `extract`, `execute` lines), deletes and extracts files, and starts the listed programs with `posix_spawn`, **`BNUpdate` if none is listed**.
+- **Warcraft III 1.27.0.18:** it makes a code page of the client writable, writes a small detour into it (a call into the library, then a jump back), and restores the protection; the target routine also calls `posix_spawn`.
+- The patch archive carries the list it would run: the 1.14.1.68 to 1.14.3.71 patch's `Prepatch.lst` is `extract Patch.txt`, `extract BNUpdate`, `execute BNUpdate`, with `BNUpdate` (an i386 Mach-O, 478,384 bytes) in the archive. The 1.14.1.68 and 1.14.3.71 executables contain the string `Prepatch.lst` themselves.
+- *(Inference)* it retrofits the prepatch step into the first Intel 1.14 build and one Warcraft III build whose own updating did not do it. Nothing in the library says what was wrong with them. The code is identical in all 20 builds.
+- Not known: whether it ever ran on a real client (no 1.14.0.64 or Warcraft III 1.27.0.18 Mac build was available), what the hooked function and the Warcraft III detour target do in those clients, and what one helper (paths for the per-user Battle.net and Blizzard preference folders) does exactly.
 
 ## The challenge
 Server to client, the usual `SID_AUTH_INFO` (0x50) or `SID_STARTVERSIONING` (0x06) fields: the archive name
@@ -123,6 +156,15 @@ words**; there are 8 distinct non-zero constants (9 in builds 03, 13, 15 and 19)
 
   The files are Blizzard's and are not in this repository. `python3 tests/run_tests.py DIR` runs the check if DIR holds either file set (this one or the Warcraft II one below).
 - **Real client (build 02, Warcraft II BNE 2.02).** The Mac Warcraft II client answered `psistorm-PMAC-02` (value string `bb3b059f39850b6e44413e7354c47d73`) with exe version `0x02000201`, checksum `0xEAA8AA30`, exe info `12b51c7cdd7097212c013148bb915fc1`. `c/psistorm.c` built with `c/psistorm_build_02.h` over the data forks of **`Warcraft II BNE`, `Storm` and `Battle.net`, in that order**, reproduces all three exactly (`real-client-vector-02-w2bn.json`, with the files' SHA-256s). Same function and file roles as Diablo, with the game executable first.
+- **Real Intel client (XMAC, builds 03, 05, 08, 12, 17).** Five answers of the Diablo II 1.14.1.68 and 1.14.3.71 clients to live `psistorm-XMAC-NN` challenges are reproduced exactly (checksum and exe info; the exe version is the `CFBundleVersion`) by `c/psistorm.c` and by `psistorm_ref.py`'s `check_revision_xmac`, over the client's main executable alone (`real-client-vector-xmac-d2dv-NN.json`, with the executables' SHA-256s and the packets; the key part of `SID_AUTH_CHECK` is left out):
+
+  | file | bytes | SHA-256 |
+  |---|---|---|
+  | `Diablo II` 1.14.1.68 (`Diablo II.app/Contents/MacOS/Diablo II`, build 08) | 4,213,104 | `1cef4bfc50f28718c1664be0cb6d65ca009bab78518f4b9b85b9d3b2ff753ce3` |
+  | `Diablo II` 1.14.3.71 (builds 03, 05, 12, 17) | 4,167,552 | `1e8dd6dd3d19019cbaa29270f4abfb04960fcf1ce5d341fa520863b0d640d177` |
+
+  `python3 tests/run_tests.py DIR` checks them if DIR holds either executable (named `Diablo II`).
+- **The real Intel libraries.** `xmac-harness/` runs the real `psistorm-XMAC-NN` bundles on a Mac (a small program inside a fake `Diablo II.app` with the real client's `Info.plist`, so that the library accepts the host) and compares them with this code: **280 of 280** cases over all 20 builds and 14 file sizes (0 to 50,000 bytes, around the 64-byte block boundary), random 16-byte value strings, checksum and exe info byte for byte. The recorded run is `xmac-harness/results.txt`; `tests/run_tests.py` checks it without a Mac.
 - **The PowerPC code itself.** The parameters were read from the real fragments: Ghidra decompilation of each build's compression
   function (about 1,450 straight-line statements per build, every parameter behind a tiny constant-returning function), lifted to Python and run with
   instrumented stubs, which gives the tables with no heuristics. The lifted functions were compared with Ghidra's p-code
@@ -138,11 +180,12 @@ words**; there are 8 distinct non-zero constants (9 in builds 03, 13, 15 and 19)
   implementation; `tests/run_tests.py` checks `c/psistorm.c` on all 20 builds and `psistorm_ref.py` (pure Python) on four.
 
 ## What is not verified
-- Builds other than 02 and 04 against a real client; only those two have a real answer, and only build 14 was checked end to end against the emulated PowerPC
-  code (the other 18 share the wrapper code).
-- Builds 02, 03, 05-07, 09-11, 13, 17 and 19 have never had a correct answer accepted by a server (accepted so far: 00, 01, 04, 08, 12, 14, 15, 16, 18).
+- PowerPC builds other than 02 and 04 against a real client; only those two have a real answer, and only build 14 was checked end to end against the emulated PowerPC
+  code (the other 18 share the wrapper code). Intel: real answers exist for numerals 03, 05, 08, 12 and 17 only; the other 15 are checked against the real libraries, not a real client.
+- Builds 02, 03, 05-07, 09-11, 13, 17 and 19 have never had a correct answer accepted by a server on `PMAC` (accepted so far: 00, 01, 04, 08, 12, 14, 15, 16, 18). On `XMAC` (Diablo II 1.14.3.71) numerals 03, 05 and 12 were accepted and 17 was refused; the numeral 17 refusal is unexplained.
 - Which three files a real client hashes for products other than Mac Diablo and Mac Warcraft II. Diablo: `Diablo`, `Storm`, `Battle.net`; Warcraft II: `Warcraft II BNE`, `Storm`, `Battle.net`.
-- `psistorm-XMAC-NN` (named in a 2006 forum post) has never been seen served.
+- `psistorm-XMAC-NN` (named in a 2006 forum post) was first seen served on 2026-10-09; whether it was served earlier is not known.
+- The Lurker code has never been seen running (no client of the two builds it targets was available), and what it does inside those clients is inferred from the library alone.
 - Another server, `connect-forever.classic.blizzard.com`, serves the same psistorm archives but refused every correct answer we sent for W2BN (six draws, exe version varied). Why is not established; it may simply not authenticate Mac builds (untested guess).
 - A 0 byte in the value string adds `0xFFFF` in step 1 with truncating stores in the C code; the original's behavior for that case
   was not tested (real value strings are random bytes, so it is rare).
@@ -155,10 +198,20 @@ words**; there are 8 distinct non-zero constants (9 in builds 03, 13, 15 and 19)
 | `builds/psistorm-PMAC-NN.json` | the same parameters as data |
 | `psistorm_ref.py` | the algorithm in plain Python (slow) |
 | `real-client-vector-04.json`, `real-client-vector-02-w2bn.json`, `synthetic-vectors.json`, `tests/run_tests.py` | test vectors and runner |
+| `real-client-vector-xmac-d2dv-NN.json` | five Intel Mac client answers (NN = 03, 05, 08, 12, 17), with the server's replies |
+| `xmac-harness/` | runs the real Intel libraries on a Mac and compares them with this code (`harness.c`, `runall.sh`, `gen_cases.py`, `cases.txt`, the recorded `results.txt`, the compiled harness `harness-exe-i386`) |
+| `xmac-lurker/` | compares the 20 Intel libraries function by function (Ghidra decompiler output) |
 
 ## Build and run
     cc -O2 -DPS_CLI -DPS_BUILD_HEADER='"psistorm_build_04.h"' -Ic c/psistorm.c -o ps04
     ./ps04 Diablo Storm Battle.net 11ea193a1ef30cf4103fd130438193df
     # version=01000902 checksum=761b6192 info=12e711545243f72d82c7298d559addd5
 
-Not included, on purpose: the challenge archives and fragments themselves, and any Blizzard game files.
+For an Intel Mac client only the main executable is hashed (the version printed is the file tail; use the bundle version instead):
+
+    : > empty
+    cc -O2 -DPS_CLI -DPS_BUILD_HEADER='"psistorm_build_05.h"' -Ic c/psistorm.c -o ps05
+    ./ps05 "Diablo II" empty empty 1d6ddd71dcf123caefaca38f7a3861f7
+    # version=00000000 checksum=b0882723 info=1cd54be9f09d3917b070caf3321c24d2   (Diablo II 1.14.3.71; the exe version is 0x010E0347, from Info.plist)
+
+Not included, on purpose: the challenge archives and fragments themselves (PowerPC and Intel), and any Blizzard game files. The test program in `xmac-harness/` is a stub written for this, not a Blizzard binary.

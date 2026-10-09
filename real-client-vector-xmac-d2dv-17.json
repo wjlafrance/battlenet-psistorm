@@ -1,0 +1,41 @@
+{
+ "description": "A real Intel Mac client answering a live psistorm challenge: Mac Diablo II 1.14.3.71 (platform XMAC, product D2DV, verbyte 0x0E) on Mac OS X 10.13.6, connected to useast.battle.net, 2026-10-09. The raw CD-key part of the SID_AUTH_CHECK packet is not included.",
+ "build": 17,
+ "client": {
+  "platform": "XMAC",
+  "product": "D2DV",
+  "verbyte": "0x0E",
+  "exe_version_reported": "0x010E0347",
+  "exe_version_source": "CFBundleVersion"
+ },
+ "challenge": {
+  "sid": "0x50 SID_AUTH_INFO (S>C)",
+  "archive": "psistorm-XMAC-17.mpq",
+  "value_string_hex": "7a0a40ba527896d1e143027d58972129",
+  "raw_packet": "ff 50 3e 00 00 00 00 00 c3 26 5b 79 58 de 0d 00 00 f0 be f8 4d 81 dc 01 70 73 69 73 74 6f 72 6d 2d 58 4d 41 43 2d 31 37 2e 6d 70 71 00 7a 0a 40 ba 52 78 96 d1 e1 43 02 7d 58 97 21 29 00"
+ },
+ "answer": {
+  "sid": "0x51 SID_AUTH_CHECK (C>S)",
+  "exe_version": "0x010e0347",
+  "checksum": "0xe50ef2a1",
+  "exe_info_hex": "5ebb86c37e9c289574f7ba168d36b6",
+  "exe_info_length": 15,
+  "server_reply": "0x51 result 0x100 old game version, patch offered + D2DV_XMAC_1xx_114d.mpq",
+  "server_reply_raw_packet": "ff 51 1f 00 00 01 00 00 44 32 44 56 5f 58 4d 41 43 5f 31 78 78 5f 31 31 34 64 2e 6d 70 71 00"
+ },
+ "server_result": "rejected",
+ "files_in_hash_order": [
+  {
+   "name": "Diablo II",
+   "path": "Diablo II.app/Contents/MacOS/Diablo II",
+   "bytes": 4167552,
+   "sha256": "1e8dd6dd3d19019cbaa29270f4abfb04960fcf1ce5d341fa520863b0d640d177",
+   "info_plist_CFBundleVersion": "1.14.3.71"
+  }
+ ],
+ "files_not_hashed": "The XMAC library ignores its file arguments (the client passes a path and two empty buffers). It hashes the main bundle's executable only.",
+ "notes": [
+  "Server side (2026-10-09): useast answered 0x100 (old game version) + D2DV_XMAC_1xx_114d.mpq to this answer from the CURRENT client (1.14.3.71), the only one of four such answers that failed. psistorm_template.c, psistorm_ref.py and the real library all produce exactly this answer: it is what the client computes.",
+  "The exe_info here is 15 bytes, not 16 (the digest shuffle's base-255 output had a leading zero digit); the client sent the 15 bytes followed by the NUL and the key owner. All other sessions had 16 bytes. Whether the server mishandles a 15-byte exe_info, or numeral 17, is not established (one sample)."
+ ]
+}
